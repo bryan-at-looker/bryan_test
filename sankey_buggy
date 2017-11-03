@@ -16,7 +16,7 @@ looker.plugins.visualizations.add({
   .attr('class', 'd3-tip d3-tip-nodes')
   .offset([-10, 0]),
   linkTooltipOffset: 20,
-  nodeTooltipOffset: 0,
+  nodeTooltipOffset: 60,
   _s: this,
   // Set up the initial state of the visualization
   create: function(element, config) {
@@ -31,7 +31,12 @@ looker.plugins.visualizations.add({
     this._svg = d3v4.select(element).append("svg").call(this.tipLinks).call(this.tipNodes);
 
     this.tipLinks.html(function(d) {
-      var html =  '<div>'+d.value+'</div>';
+      var pct = (d.value/d.source.value * 100).toFixed(1)
+      var html =  '<h1 style="z-index:9999999999">'+d.value+' - '+pct+'%</h1>';
+      return html;
+    });
+    this.tipNodes.html(function(d) {
+      var html =  '<h1 style="z-index:9999999999>'+d.value+'</h1>';
       return html;
     });
   },
@@ -197,7 +202,17 @@ looker.plugins.visualizations.add({
       })
       .on("mouseleave", function(d) {
         d3.selectAll(".link").style("opacity", 0.4);
-      });
+      })
+      .on('mousemove', function(event) {
+        _s.tipNodes
+          .style("top", (d3.event.pageY - $('.d3-tip-nodes').height() - 20) + "px")
+          .style("left", function () {
+            var left = (Math.max(d3.event.pageX - _s.nodeTooltipOffset, 10));
+            left = Math.min(left, window.innerWidth - $('.d3-tip').width() - 20)
+            return left + "px"; })
+        })
+      .on('mouseover', _s.tipNodes.show)
+      .on('mouseout', _s.tipNodes.hide);
 
 		node.append("rect")
 				.attr("x", function(d) { return d.x0; })
