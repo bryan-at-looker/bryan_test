@@ -1,0 +1,18 @@
+#!/bin/bash
+# create looker user and sudo as them
+sudo groupadd looker
+sudo useradd -m  -g looker  looker
+sudo su - looker
+mkdir ~/looker
+cd ~/looker
+pwd
+
+
+# get looker jar and startup script
+curl -O https://s3.amazonaws.com/download.looker.com/aeHee2HiNeekoh3uIu6hec3W/looker-latest.jar
+curl -O https://raw.githubusercontent.com/looker/customer-scripts/master/startup_scripts/looker
+
+# rename looker, change settings and start
+mv looker-latest.jar looker.jar
+chmod 0750 looker
+./looker start
