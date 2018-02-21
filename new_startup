@@ -1,8 +1,5 @@
 #!/bin/bash
 # create looker user and sudo as them
-sudo groupadd looker
-sudo useradd -m  -g looker  looker
-sudo su - looker
 mkdir ~/looker
 cd ~/looker
 pwd
